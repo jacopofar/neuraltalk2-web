@@ -30,7 +30,7 @@ assuming ‘/home/myuser/‘ contains both the neuraltalk2 model and the images 
 
 This will open a shell on the container. Use ‘cd /neuraltalk2/‘ to be in the neuraltalk folder and then
 
-    th eval.lua -model /mounted/natural2models/model_id1-501-1448236541.t7_cpu.t7 -image_folder /mounted/Desktop/ -gpuid -1
+    th eval.lua -model /mounted/neuraltalk2models/model_id1-501-1448236541.t7_cpu.t7 -image_folder /mounted/Desktop/ -gpuid -1
 
 will caption the images in the given folder using the given model. The captions are saved in the vis/vis.json file.
 
@@ -42,7 +42,7 @@ You will need a VM with Linux, or just install docker-machine and let it create 
 The default memory of 1GB is not enough, so give it more:
 
     docker-machine create -d virtualbox --virtualbox-memory "4000" neuraltalk2
-    eval "$(docker-machine env natural2)"
+    eval "$(docker-machine env neuraltalk2)"
 
 Then use the same instructions as Linux, but note that:
 * VMs usually do not have access to host GPUs
