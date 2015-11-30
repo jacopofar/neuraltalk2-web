@@ -7,3 +7,5 @@ RUN luarocks install loadcaffe
 RUN cd / ; git clone https://github.com/deepmind/torch-hdf5.git
 RUN cd /torch-hdf5/ && luarocks make hdf5-0-0.rockspec LIBHDF5_LIBDIR="/usr/lib/x86_64-linux-gnu/"
 RUN easy_install pip && pip install h5py
+RUN curl https://deb.nodesource.com/setup_5.x|sh -
+RUN apt-get install -y nodejs
