@@ -4,9 +4,11 @@
   "description": "Neuraltalk2 REST wrapper",
   "main": "index.js",
   "dependencies": {
+    "body-parser": "^1.14.1",
     "express": "^4.13.3",
     "multer": "^1.1.0",
-    "node-cache": "^3.0.0"
+    "node-cache": "^3.0.0",
+    "uuid": "^2.0.1"
   },
   "devDependencies": {},
   "scripts": {

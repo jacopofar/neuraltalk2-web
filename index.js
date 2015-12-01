@@ -4,8 +4,10 @@ var nconf = require('nconf');
 var express = require('express');
 var app = express();
 var server = require('http').createServer(app);
+var bodyParser = require('body-parser');
+var helpers = require('./helpers');
 var NodeCache = require("node-cache");
-
+var uuid = require('uuid');
 //this object will map the images SHA256 sums with their captions
 var sha256Captions = new NodeCache({stdTTL: 60*30, checkperiod: 11});
 
@@ -38,10 +40,22 @@ ntprocess.on('close', function (code) {
 
 };
 app.use(express.static('static'));
+app.use(bodyParser.json({limit: '6mb'}));
 
 app.get('/test',function(req,res){
 console.log("running the command...");
 runNeuralTalk();
+});
+
+app.post('/addURL',function(req,http_res){
+var url = req.body.url;
+var fname = uuid.v1();
+console.log("trying to add the URL "+url+"...");
+helpers.downloadFile(url,'/tmp/'+fname,function(err,res){
+//TODO use res mimetype OR some content-based type detection to give it the proper extension
+//also calculate the sha256sum and return it, queueing the file for the processing
+http_res.json(res);
+});
 });
 
 //start the server
