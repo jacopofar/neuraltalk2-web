@@ -48,6 +48,10 @@ runNeuralTalk();
 });
 
 app.post('/addURL',function(req,http_res){
+if(typeof req.body.url !== 'string'){
+http_res.status(400).json({error:"url field must be present and be a string containing the URL of the image to process"});
+return;
+}
 var url = req.body.url;
 var fname = uuid.v1();
 console.log("trying to add the URL "+url+"...");

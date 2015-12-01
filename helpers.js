@@ -3,6 +3,9 @@
 var http = require('http');
 var https = require('https');
 var fs = require('fs');
+var readChunk = require('read-chunk'); 
+var fileType = require('file-type');
+var crypto = require('crypto');
 
 module.exports.downloadFile = function(url, dest, cb) {
   var file = fs.createWriteStream(dest);
@@ -19,10 +22,21 @@ module.exports.downloadFile = function(url, dest, cb) {
     return;
   }
   var request = protocolhandler.get(url, function(response) {
-    response.pipe(file);
+var hasher = crypto.createHash('sha256');
+hasher.setEncoding('hex');
+response.pipe(hasher);
+response.pipe(file);
     file.on('finish', function() {
       file.close(function(err,resp){
-        cb(err,{response:resp,mimetype:response.headers['content-type']}); 
+       if(err){
+        cb(err);
+        return;
+       }
+hasher.end();
+var thisHash = hasher.read();
+
+var detectedFileType = fileType(readChunk.sync(dest, 0, 262)).ext;
+        cb(err,{response:resp,extension:detectedFileType, sha256sum:thisHash}); 
       });
     });
   });

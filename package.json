@@ -6,8 +6,10 @@
   "dependencies": {
     "body-parser": "^1.14.1",
     "express": "^4.13.3",
+    "file-type": "^3.3.0",
     "multer": "^1.1.0",
     "node-cache": "^3.0.0",
+    "read-chunk": "^1.0.1",
     "uuid": "^2.0.1"
   },
   "devDependencies": {},
