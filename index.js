@@ -10,7 +10,8 @@ var NodeCache = require("node-cache");
 var uuid = require('uuid');
 //this object will map the images SHA256 sums with their captions
 var sha256Captions = new NodeCache({stdTTL: 60*30, checkperiod: 11});
-
+//this contains the list of files waiting to be captioned, in the form {path:'/something/something.ext',sha256sum:'...'}
+var pending = [];
 
 //application configuration, use the CLI args, the env variables and then, if nothing was found, the default values
 nconf.argv().env();
@@ -53,11 +54,16 @@ http_res.status(400).json({error:"url field must be present and be a string cont
 return;
 }
 var url = req.body.url;
-var fname = uuid.v1();
+var newpath = '/tmp/'+uuid.v1();
 console.log("trying to add the URL "+url+"...");
-helpers.downloadFile(url,'/tmp/'+fname,function(err,res){
-//TODO use res mimetype OR some content-based type detection to give it the proper extension
-//also calculate the sha256sum and return it, queueing the file for the processing
+helpers.downloadFile(url,newpath,function(err,res){
+if(err){
+http_res.status(400).json(err);
+return;
+}
+//add the extension to the filename
+fs.rename(newpath,newpath+'.'+res.extension);
+pending.push({path:newpath+'.'+res.extension,sha256sum:res.sha256sum});
 http_res.json(res);
 });
 });
