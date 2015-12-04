@@ -13,4 +13,3 @@ ADD webapp /webapp
 ADD README.md /webapp
 RUN cd /webapp && npm install
 CMD cd /webapp && npm start
-EXPOSE 5000
