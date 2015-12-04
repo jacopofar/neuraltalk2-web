@@ -9,3 +9,8 @@ RUN cd /torch-hdf5/ && luarocks make hdf5-0-0.rockspec LIBHDF5_LIBDIR="/usr/lib/
 RUN easy_install pip && pip install h5py
 RUN curl https://deb.nodesource.com/setup_5.x|sh -
 RUN apt-get install -y nodejs
+ADD webapp /webapp
+ADD README.md /webapp
+RUN cd /webapp && npm install
+CMD cd /webapp && npm start
+EXPOSE 5000

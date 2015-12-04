@@ -8,12 +8,14 @@
     "express": "^4.13.3",
     "file-type": "^3.3.0",
     "multer": "^1.1.0",
+    "nconf": "^0.8.2",
     "node-cache": "^3.0.0",
     "read-chunk": "^1.0.1",
     "uuid": "^2.0.1"
   },
   "devDependencies": {},
   "scripts": {
+    "start":"node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
