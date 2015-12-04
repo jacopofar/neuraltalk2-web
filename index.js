@@ -12,7 +12,7 @@ var uuid = require('uuid');
 var sha256Captions = new NodeCache({stdTTL: 60*30, checkperiod: 11});
 //this contains the list of files waiting to be captioned, in the form {path:'/something/something.ext',sha256sum:'...'}
 var pending = [];
-
+var isAlreadyRunning = false;
 //application configuration, use the CLI args, the env variables and then, if nothing was found, the default values
 nconf.argv().env();
 
@@ -37,8 +37,35 @@ var runNeuralTalk = function(callback){
 
   ntprocess.on('close', function (code) {
     console.log('child process exited with code ' + code);
+    callback(code);
   });
 };
+
+setInterval(()=>{
+  if(pending.length === 0 || isAlreadyRunning){
+    return;
+  }
+  isAlreadyRunning = true;
+  pending.forEach((p,i) =>{
+    helpers.cp(p.path,nconf.get('processFolder')+'/'+p.sha256sum+'.'+p.path.split('.').slice(-1),err => {
+      if(err){
+        console.error("error copying file to be processed",err)
+          return;
+      }
+      console.log("copied file "+i+" of "+pending.length);
+      if(i === pending.length -1){
+        runNeuralTalk(retCode => {
+          //time to parse the captions
+          isAlreadyRunning = false;
+          pending = [];
+          console.log("RETURN CODE "+retCode);
+        });
+      }
+
+    });
+  });
+
+},5000);
 
 app.use(express.static('static'));
 app.use(bodyParser.json({limit: '6mb'}));
