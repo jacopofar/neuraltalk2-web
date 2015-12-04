@@ -34,8 +34,12 @@ module.exports.downloadFile = function(url, dest, cb) {
         }
         hasher.end();
         var thisHash = hasher.read();
-
-        var detectedFileType = fileType(readChunk.sync(dest, 0, 262)).ext;
+        var fType = fileType(readChunk.sync(dest, 0, 262));
+        if(fType === null){
+          cb({error:"cannot determine file type, is the URL correct?"});
+          return;
+        }
+        var detectedFileType = fType.ext;
         cb(err,{response:resp,extension:detectedFileType, sha256sum:thisHash}); 
       });
     });
