@@ -13,6 +13,10 @@ var sha256Captions = new NodeCache({stdTTL: 60*30, checkperiod: 11});
 //this contains the list of files waiting to be captioned, in the form {path:'/something/something.ext',sha256sum:'...'}
 var pending = [];
 var isAlreadyRunning = false;
+
+//latest result form image processing
+var latestOutcome = {timestamp:new Date().toISOString(), status:'OK', detail:'never executed'};
+
 //application configuration, use the CLI args, the env variables and then, if nothing was found, the default values
 nconf.argv().env();
 
@@ -41,6 +45,23 @@ var runNeuralTalk = function(callback){
   });
 };
 
+var parseCaptions = function(cb){
+  fs.readFile('/neuraltalk2/vis/vis.json', 'utf8',(err, data) => {
+    if(err){
+      latestOutcome = {timestamp:new Date().toISOString(), status:'error parsing the captions',detail:err};
+      return;
+    }
+    var done = 0;
+    JSON.parse(data).forEach(result => {
+      var sha256sum = result.file_name.replace(nconf.get('processFolder'),'').split('.')[0];
+      console.log("sha256sum "+sha256sum+" => "+result.caption);
+      sha256Captions.set(sha256sum,result.caption);
+      done++;
+    });
+    latestOutcome = {timestamp:new Date().toISOString(), status:'OK',processed:done};
+  });
+};
+
 setInterval(()=>{
   if(pending.length === 0 || isAlreadyRunning){
     return;
@@ -58,7 +79,14 @@ setInterval(()=>{
           //time to parse the captions
           isAlreadyRunning = false;
           pending = [];
-          console.log("RETURN CODE "+retCode);
+          console.log(" +++ return code from neuraltalk2: "+retCode);
+          if(retCode !== 0){
+            latestOutcome = {timestamp:new Date().toISOString(), status:'failure', retCode:retCode};
+            return;
+          }
+          parseCaptions(()=> {
+            isAlreadyRunning = false;
+          });
         });
       }
 
@@ -70,9 +98,19 @@ setInterval(()=>{
 app.use(express.static('static'));
 app.use(bodyParser.json({limit: '6mb'}));
 
-app.get('/test',function(req,res){
-  console.log("running the command...");
-  runNeuralTalk();
+app.get('/caption/:sha256sum',function(req,res){
+
+  var key = req.params.sha256sum;
+  var value = sha256Captions.get(key);
+  if(key.length !== 64){
+    res.status(400).json({error:"expecting a sha256 digest, it should be 64 characters long"});
+  }
+  if(value){
+    res.json({caption:value});
+    return;
+  }
+
+  res.status(404).json({error:"caption not found, it is expired or yet to be processed"});
 });
 
 app.post('/addURL',function(req,http_res){
@@ -95,6 +133,7 @@ app.post('/addURL',function(req,http_res){
     http_res.json(res);
   });
 });
+
 
 //start the server
 server.listen(nconf.get('port'), function () {
