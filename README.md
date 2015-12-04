@@ -24,7 +24,7 @@ It's better to restart your machine aftwerwards.
 
 Then run
 
-    docker run -it -v /home/myuser/:/mounted jacopofar/neuraltalk2-web:latest bash
+    docker run -it --name neuraltalk2-web -v /home/myuser/:/mounted jacopofar/neuraltalk2-web:latest bash
 
 assuming ‘/home/myuser/‘ contains both the neuraltalk2 model and the images to caption.
 
