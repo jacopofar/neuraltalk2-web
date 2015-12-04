@@ -98,6 +98,10 @@ setInterval(()=>{
 app.use(express.static('static'));
 app.use(bodyParser.json({limit: '6mb'}));
 
+app.get('/status',(req,res)=>{
+res.json(latestOutcome);
+});
+
 app.get('/caption/:sha256sum',function(req,res){
 
   var key = req.params.sha256sum;
