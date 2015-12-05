@@ -23,9 +23,30 @@ nconf.argv().env();
 nconf.defaults({
   port: 5000,
   modelPath: '/mounted/model/model_id1-501-1448236541.t7_cpu.t7',
-  processFolder: '/mounted/Downloads/',
+  processFolder: '/tmp',
   useGPU: '-1'
 });
+
+
+//check that the model and the processing folder are present
+try{
+  fs.statSync(nconf.get('modelPath'));
+}
+catch(e){
+  console.error("cannot find model file: "+nconf.get('modelPath')+" is the Docker volume  mounted correctly using the -v option?");
+  process.exit(1);
+}
+
+
+
+try{
+  fs.statSync(nconf.get('processFolder'));
+}
+catch(e){
+  console.error("cannot find process folder: "+nconf.get('processFolder'));
+  process.exit(1);
+}
+
 
 var runNeuralTalk = function(callback){
   var spawn = require('child_process').spawn;
@@ -104,7 +125,7 @@ app.use(express.static('static'));
 app.use(bodyParser.json({limit: '6mb'}));
 
 app.get('/status',(req,res)=>{
-res.json(latestOutcome);
+  res.json(latestOutcome);
 });
 
 app.get('/caption/:sha256sum',function(req,res){

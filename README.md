@@ -44,11 +44,41 @@ Usage
 =======
 
 You can use the command line or the web interface, depending on your needs.
+The web interface is useful to integrate captioning in other applications, just by calling a few endpoints.
+
+In any case you will need a model file, see the [neuraltalk2 page](https://github.com/karpathy/neuraltalk2) for that.
 
 Web interface
 ------------
 
-Write me...
+Assuming your model file is located at `/home/user/captiondata/model/model_id1-501-1448236541.t7_cpu.t7` you need to run the container with this command:
+
+`docker run --name neuraltalk2-web -p 5000:5000 -v /home/user/captiondata:/mounted jacopofar/neuraltalk2-web:latest`
+
+if you have a different model name, use `-e "modelPath=/mounted/mymodel.t7"` to tell the path. A check is run at startup to ensure it is found.
+
+Now you can add an image URL to the processing queue using the addURL endpoint:
+
+`curl -X POST -H "Content-Type: application/json" -d '{"url":"https://upload.wikimedia.org/wikipedia/commons/8/85/Garden_bench_001.jpg"}' 'http://localhost:5000/addURL'`
+
+it will return the SHA256 and the filetype of the file:
+```
+    {
+    "extension": "jpg",
+    "sha256sum": "5421c617efb140e0c4967051838dc6d6b4894444b29c0bbc649399fee0b0f5ef"
+    }
+```
+
+Then call the caption endpoint using the SHA256:
+
+`curl 'http://localhost:5000/caption/5421c617efb140e0c4967051838dc6d6b4894444b29c0bbc649399fee0b0f5ef'`
+
+and retrieve the caption:
+
+`{"caption":"a wooden bench sitting on top of a lush green field"}`
+
+You can also see the status using:
+`curl 'http://localhost:5000/status'`
 
 Command line
 -------------
