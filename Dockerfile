@@ -10,8 +10,6 @@ RUN easy_install pip && pip install h5py
 RUN curl https://deb.nodesource.com/setup_5.x|sh -
 RUN apt-get install -y nodejs
 ADD webapp /webapp
-RUN ls / ; ls /webapp
 ADD README.md /webapp/README.md
 RUN cd /webapp && /usr/bin/npm install
-RUN cd /webapp && ls -lhta
-CMD CMD ["/usr/bin/node","/webapp/index.js"]
+CMD ["/usr/bin/node","/webapp/index.js"]
