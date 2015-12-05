@@ -12,4 +12,4 @@ RUN apt-get install -y nodejs
 ADD webapp /webapp
 ADD README.md /webapp
 RUN cd /webapp && npm install
-CMD cd /webapp && npm start
+CMD CMD ["/usr/bin/node","/webapp/index.js"]
