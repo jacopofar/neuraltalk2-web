@@ -79,7 +79,7 @@ var parseCaptions = function(cb){
     var done = 0;
     JSON.parse(data).forEach(result => {
       fs.unlink(result.file_name);
-      var sha256sum = result.file_name.replace(nconf.get('processFolder'),'').split('.')[0];
+      var sha256sum = result.file_name.replace(nconf.get('processFolder'),'').split('.')[0].replace('/','');
       console.log("sha256sum "+sha256sum+" => "+result.caption);
       sha256Captions.set(sha256sum,result.caption);
       done++;
