@@ -23,7 +23,7 @@ nconf.argv().env();
 nconf.defaults({
   port: 5000,
   modelPath: '/mounted/model/model_id1-501-1448236541.t7_cpu.t7',
-  processFolder: '/tmp',
+  processFolder: '/tmp/',
   useGPU: '-1'
 });
 
