@@ -61,7 +61,7 @@ var runNeuralTalk = function(callback){
   });
 
   ntprocess.on('close', function (code) {
-    console.log('child process exited with code ' + code);
+    console.log('neuraltalk2 process exited with code ' + code);
     callback(code);
   });
 };
@@ -99,7 +99,8 @@ setInterval(()=>{
         console.error("error copying file to be processed",err)
           return;
       }
-      console.log("copied file "+i+" of "+pending.length);
+      fs.unlink(p.path);
+      console.log("moved file "+i+" of "+pending.length);
       if(i === pending.length -1){
         runNeuralTalk(retCode => {
           //time to parse the captions
