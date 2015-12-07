@@ -8,7 +8,7 @@ You can both use it from the command line and as a web service.
 Does it use GPUs?
 ------------------
 
-Unfortunately not. Although neuraltalk2 can use GPU I don't have the proper hardware to test it and so the Docker image runs only on CPU. It should be pretty easy to implement, so if you have the will to test the Docker image on your GPU don't hesitate to open issues or make pull requests.
+Unfortunately not. Although neuraltalk2 can use GPU I don't have the proper hardware to test it and so the Docker image runs only on CPU. Look [here](https://github.com/beeva-enriqueotero/docker-neuraltalk2) for a GPU-enabled image.
 
 Installation
 ===============
@@ -82,6 +82,12 @@ You can also see the status using:
 
 Command line
 -------------
+
+If you want to use this locally, also look at these two Dockerized neuraltalk2:
+
+* [SaMnCo/docker-neuraltalk2](https://github.com/SaMnCo/docker-neuraltalk2) has a branch for ARM machines, 
+
+* [beeva-enriqueotero/docker-neuraltalk2](https://github.com/beeva-enriqueotero/docker-neuraltalk2) has A GPU enabled version and links to script to run it live using a camera.
 Run
 
     docker run -it --name neuraltalk2-web -v /home/myuser/:/mounted jacopofar/neuraltalk2-web:latest bash
