@@ -8,10 +8,12 @@ var bodyParser = require('body-parser');
 var helpers = require('./helpers');
 var NodeCache = require("node-cache");
 var uuid = require('uuid');
-
 var multer  = require('multer');
-var upload = multer()
+var upload = multer({ dest: '/tmp' });
 
+
+//use /tmp folder to store uploaded files
+app.use(multer());
 //this object will map the images SHA256 sums with their captions
 var sha256Captions = new NodeCache({stdTTL: 60*30, checkperiod: 11});
 //this contains the list of files waiting to be captioned, in the form {path:'/something/something.ext',sha256sum:'...'}
@@ -176,8 +178,21 @@ server.listen(nconf.get('port'), function () {
   console.log(' Application started on port', port);
 });
 
-app.post('/upload', upload.single('avatar'), function (req, res, next) {
-  //TODO work in progress
-  // req.file is the `avatar` file
-  //   // req.body will hold the text fields, if there were any
+
+app.post('/upload',upload.single('file'), function (req, http_res, next) {
+  console.log("uploaded new file: "+req.file.path);
+  var newpath = '/tmp/'+uuid.v1();
+
+  helpers.retrieveLocalFile(req.file.path,newpath,function(err,res){
+    if(err){
+      http_res.status(400).json(err);
+      return;
+    }
+    //add the extension to the filename
+    fs.rename(newpath,newpath+'.'+res.extension);
+    console.log({path:newpath+'.'+res.extension,sha256sum:res.sha256sum});
+    pending.push({path:newpath+'.'+res.extension,sha256sum:res.sha256sum});
+    http_res.json(res);
+  });
 });
+

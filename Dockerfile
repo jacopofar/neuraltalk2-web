@@ -13,3 +13,4 @@ ADD webapp /webapp
 ADD README.md /webapp/README.md
 RUN cd /webapp && /usr/bin/npm install
 CMD ["/usr/bin/node","/webapp/index.js"]
+WORKDIR /webapp
