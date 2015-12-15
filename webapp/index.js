@@ -8,6 +8,10 @@ var bodyParser = require('body-parser');
 var helpers = require('./helpers');
 var NodeCache = require("node-cache");
 var uuid = require('uuid');
+
+var multer  = require('multer');
+var upload = multer()
+
 //this object will map the images SHA256 sums with their captions
 var sha256Captions = new NodeCache({stdTTL: 60*30, checkperiod: 11});
 //this contains the list of files waiting to be captioned, in the form {path:'/something/something.ext',sha256sum:'...'}
@@ -170,4 +174,10 @@ app.post('/addURL',function(req,http_res){
 server.listen(nconf.get('port'), function () {
   var port = server.address().port;
   console.log(' Application started on port', port);
+});
+
+app.post('/upload', upload.single('avatar'), function (req, res, next) {
+  //TODO work in progress
+  // req.file is the `avatar` file
+  //   // req.body will hold the text fields, if there were any
 });
