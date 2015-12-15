@@ -12,8 +12,6 @@ var multer  = require('multer');
 var upload = multer({ dest: '/tmp' });
 
 
-//use /tmp folder to store uploaded files
-app.use(multer());
 //this object will map the images SHA256 sums with their captions
 var sha256Captions = new NodeCache({stdTTL: 60*30, checkperiod: 11});
 //this contains the list of files waiting to be captioned, in the form {path:'/something/something.ext',sha256sum:'...'}
