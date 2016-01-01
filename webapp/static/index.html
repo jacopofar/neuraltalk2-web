@@ -1,16 +1,62 @@
-<!doctype html>
 <html lang=en>
-<head>
-<meta charset=utf-8>
-<title>naturalnode2 web</title>
-<script src="dropzone.js"></script>
-</head>
-<body>
-<p>Load an image here</p>
+  <head>
+    <meta charset=utf-8>
+    <title>naturalnode2 web</title>
+    <script src="dropzone.js"></script>
+    <script>
+//show the server status
+setInterval(function(){
+  var r = new XMLHttpRequest();
+  r.open("GET", "/status");
+  r.onreadystatechange = function () {
+    var status_elem = document.getElementById("serverstatus");
+    if (r.readyState != 4 || r.status != 200)
+      status_elem.innerText="ERROR REQUESTING SERVER STATUS!";
+    else
+      status_elem.innerText=r.responseText;
+  };
+  r.send();
+},2000);
+//we want to define the dropzone programmatically
+Dropzone.autoDiscover = false;
 
-<form action="/upload"
-      class="dropzone"
-      id="my-awesome-dropzone"></form>
+window.onload = function() {
+  var myDropzone = new Dropzone("#image-upload-dropzone");
 
-</body>
+  myDropzone.on("error", function(file,message,xhr) {
+    window.alert("error loading the image:"+message);
+  });
+  myDropzone.on("success", function(file,resp) {
+    var pending_hash = resp.sha256sum;
+    var status_elem = document.getElementById("captionstatus");
+    status_elem.innerText = "waiting for the captioning of the image...";
+    var checkTimer = setInterval(function(){
+      var r = new XMLHttpRequest();
+      r.open("GET", "/caption/"+pending_hash);
+      r.onreadystatechange = function () {
+        if (r.readyState != 4)
+          status_elem.innerText="ERROR REQUESTING CAPTION STATUS!";
+        else
+          status_elem.innerText=r.responseText;
+      };
+      r.send();
+    },2000);
+
+  });
+};
+    </script>
+  </head>
+  <body>
+    <p>Load an image here</p>
+
+    <form action="/upload"
+          class="dropzone"
+          id="image-upload-dropzone"></form>
+    
+    <strong>caption result:</strong>
+    <p id="captionstatus"></p>
+    <strong>server status</strong>
+    <p id="serverstatus"></p>
+  </body>
 </html>
+
