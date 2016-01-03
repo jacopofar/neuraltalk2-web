@@ -45,6 +45,8 @@ Usage
 
 If you just want to try caption an image, visit http://localhost:5000 and click or drag a file on the "drag files here to upload", then wait a few seconds and the caption will appear below. There's a known bug that requires to reload the page to caption another image.
 
+![alt tag](https://raw.githubusercontent.com/jacopofar/neuraltalk2-web/master/screenshot.png)
+
 You can use the command line or the web interface, depending on your needs.
 
 The web interface is useful to integrate captioning in other applications, just by calling a few endpoints.
