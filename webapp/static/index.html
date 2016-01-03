@@ -29,15 +29,20 @@ window.onload = function() {
   myDropzone.on("success", function(file,resp) {
     var pending_hash = resp.sha256sum;
     var status_elem = document.getElementById("captionstatus");
+    status_elem.style.color='yellow';
     status_elem.innerText = "waiting for the captioning of the image...";
     var checkTimer = setInterval(function(){
       var r = new XMLHttpRequest();
       r.open("GET", "/caption/"+pending_hash);
       r.onreadystatechange = function () {
-        if (r.readyState != 4)
+        if (r.readyState != 4){
+          status_elem.style.color='red';
           status_elem.innerText="ERROR REQUESTING CAPTION STATUS!";
-        else
+        }
+        else{
+          status_elem.style.color='green';
           status_elem.innerText=r.responseText;
+        }
       };
       r.send();
     },2000);
