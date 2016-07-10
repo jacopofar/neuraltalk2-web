@@ -1,7 +1,7 @@
 # neuraltalk2-web
 [Neuraltalk2](https://github.com/karpathy/neuraltalk2) is a fantastic tool based on Torch which uses neural networks to automatically caption images.
 
-This repository offers a Dockerfile and a web interface to run immediately the program without having to manually install the dependencies and exposing it as a simple REST interface. A basic browser page is available, too,
+This repository offers a Dockerfile and a web interface to run immediately the program without having to manually install the dependencies and exposing it as a simple REST interface. A basic browser page is available, too.
 
 You can both use it from the command line and as a web service.
 
