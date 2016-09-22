@@ -42,6 +42,7 @@ Then use the same instructions as Linux, but note that:
 
 Usage
 =======
+_NOTE_ : the application sends system metrics (free RAM, nodejs version, OS, etc. nothing like username or other personal data) to a server for my curiosity. The data is shown in the console.
 
 If you just want to try caption an image, visit http://localhost:5000 and click or drag a file on the "drag files here to upload", then wait a few seconds and the caption will appear below. There's a known bug that requires to reload the page to caption another image.
 
