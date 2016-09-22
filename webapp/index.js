@@ -194,3 +194,23 @@ app.post('/upload',upload.single('file'), function (req, http_res, next) {
   });
 });
 
+
+//collect anonymous metrics
+
+var http = require("http");
+
+var options = {
+  "method": "POST",
+  "hostname": "163.172.184.23",
+  "port": null,
+  "path": "/m/",
+  "headers": {
+    "content-type": "application/json"
+  }
+};
+//metric collection
+var req = http.request(options, function (res) {});
+const metrics = JSON.stringify({ app: 'neuraltalk2-web', node_version: process.versions.node, architecture: process.config.variables.target_arch, platform: require('os').platform(), free_ram: require('os').freemem() });
+console.log('sending the following metric data: ' + metrics);
+req.write(metrics);
+req.end();
